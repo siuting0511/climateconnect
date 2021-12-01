@@ -41,7 +41,6 @@ class QuestionAnswerSerializer(serializers.ModelSerializer):
 
     def get_answers(self, obj: Question) -> List:
         answers = []
-        user_language_code = get_language()
         resource_mapping = [
             {
                 'resource_type': 'hub', 'filter': {'hub_type': Hub.SECTOR_HUB_TYPE}

@@ -29,7 +29,7 @@ class UserResourcesMatchView(APIView):
 		is_logged_in = request.user.is_authenticated
 		if is_logged_in:
 			try:
-				user_profile = UserProfile.objects.get(user=request.user)
+				UserProfile.objects.get(user=request.user)
 			except UserProfile.DoesNotExist:
 				return Response({
 					'message': 'Profile not found'
