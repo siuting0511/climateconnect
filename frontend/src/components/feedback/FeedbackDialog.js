@@ -1,8 +1,8 @@
 import { Button, Checkbox, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
-import getTexts from "../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 import GenericDialog from "./../dialogs/GenericDialog";
 
@@ -28,7 +28,13 @@ export default function FeedbackDialog({ onClose, open, title, inputLabel, maxLe
   const [checked, setChecked] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const { locale, user } = useContext(UserContext);
-  const texts = getTexts({ page: "communication", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "communication", locale: locale}));
+    }
+  },[locale]);
   const handleClose = () => {
     onClose();
     setElement("");

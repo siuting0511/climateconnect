@@ -1,9 +1,9 @@
 import { Link, Typography, useMediaQuery } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Chart from "react-google-charts";
-import getTexts from "../../../../public/texts/texts";
+import getTexts from "../../../../public/texts/texts_optimized";
 import hubTheme from "../../../themes/hubTheme";
 import theme from "../../../themes/theme";
 import UserContext from "../../context/UserContext";
@@ -36,8 +36,13 @@ const useStyles = makeStyles((theme) => ({
 export default function FashionDescription() {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "hub", locale: locale, hubName: "Fashion" });
-  const isNarrowScreen = useMediaQuery(theme.breakpoints.down("xs"));
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "hub", locale: locale, hubName: "Fashion"}));
+    }
+  },[locale]);    const isNarrowScreen = useMediaQuery(theme.breakpoints.down("xs"));
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <ThemeProvider theme={hubTheme}>

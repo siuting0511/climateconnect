@@ -2,11 +2,11 @@ import { Avatar, Button, CircularProgress, Link, Tooltip, Typography } from "@ma
 import { makeStyles } from "@material-ui/core/styles";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Truncate from "react-truncate";
 import { getLocalePrefix } from "../../../public/lib/apiOperations";
 import { getImageUrl } from "../../../public/lib/imageOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 import ConfirmDialog from "../dialogs/ConfirmDialog";
 import ProfileBadge from "../profile/ProfileBadge";
@@ -81,7 +81,13 @@ export default function Post({
 }) {
   const classes = useStyles({ preview: type === "preview" });
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "communication", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "communication", locale: locale }));
+    }
+  },[locale]);
   const [open, setOpen] = React.useState(false);
   const [displayReplies, setDisplayReplies] = React.useState(true);
   const [replyInterfaceExpanded, setInterfaceExpanded] = React.useState(false);

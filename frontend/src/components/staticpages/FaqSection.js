@@ -3,9 +3,9 @@ import { Button, Container, Typography } from "@material-ui/core";
 import ContactSupportOutlinedIcon from "@material-ui/icons/ContactSupportOutlined";
 import ExpandLessOutlinedIcon from "@material-ui/icons/ExpandLessOutlined";
 import ExpandMoreOutlinedIcon from "@material-ui/icons/ExpandMoreOutlined";
-import React, { useContext, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 import FaqQuestionElement from "../faq/FaqQuestionElement";
 
@@ -76,7 +76,14 @@ export default function FaqSection({ headlineClass, questions }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
 
-  const texts = getTexts({ page: "faq", locale: locale, classes: classes });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "faq", locale: locale, classes: classes }));
+    }
+  },[locale, classes]);
+
   const [expanded, setExpanded] = useState(false);
   const handleToggleShowMore = (e) => {
     e.preventDefault();

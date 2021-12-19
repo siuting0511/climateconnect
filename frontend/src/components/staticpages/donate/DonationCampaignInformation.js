@@ -11,11 +11,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Cookies from "universal-cookie";
 import { getLocalePrefix } from "../../../../public/lib/apiOperations";
 import { getCookieProps } from "../../../../public/lib/cookieOperations";
-import getTexts from "../../../../public/texts/texts";
+import getTexts from "../../../../public/texts/texts_optimized";
 import theme from "../../../themes/theme";
 import UserContext from "../../context/UserContext";
 import DonationGoal from "./DonationGoal";
@@ -105,7 +105,13 @@ export default function DonationCampaignInformation() {
   const [expanded, setExpanded] = React.useState(false);
   const { donationGoal, locale } = useContext(UserContext);
   const isNarrowScreen = useMediaQuery(theme.breakpoints.down("xs"));
-  const texts = getTexts({ page: "donate", locale: locale, classes: classes });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "donate", classes: classes, locale: locale}));
+    }
+  },[locale, classes]);
 
   const handleClose = () => {
     const expiry = daysInFuture(3);

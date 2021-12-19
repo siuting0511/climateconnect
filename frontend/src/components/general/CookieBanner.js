@@ -1,9 +1,9 @@
 import { Button, Checkbox, Container, Typography, useMediaQuery } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Cookies from "universal-cookie";
 import { getLocalePrefix } from "../../../public/lib/apiOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 
 const useStyles = makeStyles((theme) => {
@@ -71,7 +71,14 @@ const useStyles = makeStyles((theme) => {
 export default function CookieBanner({ closeBanner }) {
   const classes = useStyles();
   const { updateCookies, locale } = useContext(UserContext);
-  const texts = getTexts({ page: "cookie", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "cookie", locale: locale}));
+    }
+  },[locale]);
+
   const [checked, setChecked] = React.useState({ necessary: true, statistics: false });
   const cookies = new Cookies();
   const isNarrowScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));

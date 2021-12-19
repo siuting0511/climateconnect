@@ -1,15 +1,21 @@
-import React, { useContext, useEffect, useMemo } from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import { apiRequest, getLocalePrefix } from "../public/lib/apiOperations";
 import { getParams } from "../public/lib/generalOperations";
 import { redirectOnLogin } from "../public/lib/profileOperations";
-import getTexts from "../public/texts/texts";
+import getTexts from "../public/texts/texts_optimized";
 import Layout from "../src/components/layouts/layout";
 import UserContext from "./../src/components/context/UserContext";
 import Form from "./../src/components/general/Form";
 
 export default function Signin() {
   const { user, signIn, locale } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "profile", locale: locale }), [locale]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "profile", locale: locale}));
+    }
+  },[locale]);
 
   const fields = [
     {

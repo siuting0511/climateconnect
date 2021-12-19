@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Container, Divider, Tab, Tabs, useMediaQuery } from "@material-ui/core";
 import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
 import _ from "lodash";
-import React, { useContext, useEffect, useRef, useState, Suspense, useMemo } from "react";
+import React, { useContext, useEffect, useRef, useState, Suspense } from "react";
 import Cookies from "universal-cookie";
 import getFilters from "../../../public/data/possibleFilters";
 import { splitFiltersFromQueryObject } from "../../../public/lib/filterOperations";
@@ -19,7 +19,7 @@ import {
   getFilterUrl,
   getSearchParams,
 } from "../../../public/lib/urlOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import FeedbackContext from "../context/FeedbackContext";
 import LoadingContext from "../context/LoadingContext";
 import UserContext from "../context/UserContext";
@@ -108,6 +108,13 @@ export default function BrowseContent({
   const firstProjectCardRef = useRef(null);
   const filterButtonRef = useRef(null);
   const organizationsTabRef = useRef(null);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "general", locale: locale}));
+    }
+  },[locale]);
 
   const legacyModeEnabled = process.env.ENABLE_LEGACY_LOCATION_FORMAT === "true";
   const classes = useStyles();
@@ -118,7 +125,8 @@ export default function BrowseContent({
     TYPES_BY_TAB_VALUE.push("ideas");
   }
   const { locale } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "general", locale: locale }), [locale]);
+
+
   const type_names = {
     projects: texts.projects,
     organizations: isNarrowScreen ? texts.orgs : texts.organizations,
@@ -128,8 +136,8 @@ export default function BrowseContent({
   const [hash, setHash] = useState(null);
   const [tabValue, setTabValue] = useState(hash ? TYPES_BY_TAB_VALUE.indexOf(hash) : 0);
 
-  const isNarrowScreen = useMemo(() => useMediaQuery((theme) => theme.breakpoints.down("sm")), []);
-  const isMobileScreen = useMemo(() => useMediaQuery((theme) => theme.breakpoints.down("xs")), []);
+  const isNarrowScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isMobileScreen = useMediaQuery((theme) => theme.breakpoints.down("xs"));
 
   // Always default to filters being expanded
   const [filtersExpanded, setFiltersExpanded] = useState(true);

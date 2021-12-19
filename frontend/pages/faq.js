@@ -1,10 +1,10 @@
 import { Container, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Cookies from "next-cookies";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 import { apiRequest } from "../public/lib/apiOperations";
-import getTexts from "../public/texts/texts";
+import getTexts from "../public/texts/texts_optimized";
 import UserContext from "../src/components/context/UserContext";
 import FilteredFaqContent from "../src/components/faq/FilteredFaqContent";
 import UnfilteredFaqContent from "../src/components/faq/UnfilteredFaqContent";
@@ -105,7 +105,13 @@ export default function Faq({ questionsBySection, questions }) {
   // The first section should be the initial tab value
   const [searchValue, setSearchValue] = React.useState("");
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "faq", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "faq", locale: locale}));
+    }
+  },[locale]);
 
   const handleSearchBarChange = (event) => {
     setSearchValue(event?.target?.value);

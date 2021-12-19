@@ -14,7 +14,7 @@ import {
   getLastCompletedTutorialStep,
   getLastStepBeforeSkip,
 } from "../public/lib/tutorialOperations";
-import getTexts from "../public/texts/texts";
+import getTexts from "../public/texts/texts_optimized";
 import UserContext from "../src/components/context/UserContext";
 import Layout from "../src/components/layouts/layout";
 import BasicInfo from "../src/components/signup/BasicInfo";
@@ -34,7 +34,14 @@ export default function Signup() {
   });
   const cookies = new Cookies();
   const { user, locale } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "profile", locale: locale }), [locale]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "profile", locale: locale}));
+    }
+  },[locale]);
+
   //Information about the completion state of the tutorial
   const tutorialCookie = cookies.get("finishedTutorialSteps");
   const isClimateActorCookie = cookies.get("tutorialVariables");

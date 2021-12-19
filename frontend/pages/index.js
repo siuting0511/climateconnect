@@ -1,9 +1,9 @@
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NextCookies from "next-cookies";
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { apiRequest, getLocalePrefix } from "../public/lib/apiOperations";
-import getTexts from "../public/texts/texts";
+import getTexts from "../public/texts/texts_optimized";
 import UserContext from "../src/components/context/UserContext";
 import DonationsBanner from "../src/components/landingPage/DonationsBanner";
 import HubsBox from "../src/components/landingPage/HubsBox";
@@ -93,7 +93,14 @@ export async function getServerSideProps(ctx) {
 export default function Index() {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "general", locale: locale }), [locale]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "general", locale: locale}));
+    }
+  },[locale]);
+
   const [initialized, setInitialized] = useState(false);
   const [pos, setPos] = useState("top");
   const [isLoading, setIsLoading] = useState(true);

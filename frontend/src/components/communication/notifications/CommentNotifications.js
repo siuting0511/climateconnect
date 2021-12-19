@@ -1,12 +1,18 @@
 import CommentIcon from "@material-ui/icons/Comment";
-import React, { useContext } from "react";
-import getTexts from "../../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../../public/texts/texts_optimized";
 import UserContext from "../../context/UserContext";
 import GenericNotification from "./GenericNotification";
 
 function CommentNotification({ link, object_commented_on, comment_text, is_reply }) {
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "notification", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "notification", locale: locale }));
+    }
+  },[locale]);
   const primaryText =
     (is_reply ? texts.reply_to_your_comment_on : texts.comment_on) +
     ' "' +

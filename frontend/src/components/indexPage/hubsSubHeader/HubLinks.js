@@ -1,8 +1,8 @@
 import { Link, useMediaQuery } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../../public/lib/apiOperations";
-import getTexts from "../../../../public/texts/texts";
+import getTexts from "../../../../public/texts/texts_optimized";
 import theme from "../../../themes/theme";
 import HubsDropDown from "./HubsDropDown";
 
@@ -24,7 +24,14 @@ export default function HubLinks({
 }) {
   const classes = useStyles();
   const [open, setOpen] = useState({ sectorHubs: false, cityHubs: false });
-  const texts = getTexts({ page: "navigation", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "navigation", locale: locale}));
+    }
+  },[locale]);
+
   const sectorHubs = hubs.filter((h) => h.hub_type === "sector hub");
   const locationHubs = hubs.filter((h) => h.hub_type === "location hub");
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("sm"));

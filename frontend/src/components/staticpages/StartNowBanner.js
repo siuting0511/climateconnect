@@ -1,8 +1,8 @@
 import { Container, Typography } from "@material-ui/core";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../public/lib/apiOperations";
 import { makeStyles } from "@material-ui/core/styles";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 import LightBigButton from "./LightBigButton";
 
@@ -34,7 +34,14 @@ const useStyles = makeStyles((theme) => ({
 export default function StartNowBanner({ h1ClassName, className }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "landing_page", locale: locale, classes: classes });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "landing_page", locale: locale, classes: classes}));
+    }
+  },[locale, classes]);
+
   return (
     <div className={`${classes.root} ${className}`}>
       <Container>

@@ -1,8 +1,8 @@
 import { Link, Typography } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
-import getTexts from "../../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../../public/texts/texts_optimized";
 import hubTheme from "../../../themes/hubTheme";
 import UserContext from "../../context/UserContext";
 import SimpleBarChart from "../SimpleBarChart";
@@ -25,8 +25,13 @@ const useStyles = makeStyles((theme) => ({
 export default function FoodDescription() {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "hub", locale: locale, hubName: "Food" });
+  const [texts, setTexts] = useState({});
 
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "hub", locale: locale, hubName: "Food"}));
+    }
+  },[locale]);
   const chart1Config = {
     unit: "kg CO2e / day",
     data: [

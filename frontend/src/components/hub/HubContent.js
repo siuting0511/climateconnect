@@ -2,8 +2,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Button, Collapse, Container, useMediaQuery } from "@material-ui/core";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import React, { useContext, useMemo } from "react";
-import getTexts from "../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../public/texts/texts_optimized";
 import theme from "../../themes/theme";
 import MessageContent from "../communication/MessageContent";
 import UserContext from "../context/UserContext";
@@ -102,7 +102,14 @@ export default function HubContent({
 }) {
   const { locale, user } = useContext(UserContext);
   const classes = useStyles({ isLocationHub: isLocationHub, loggedOut: !user });
-  const texts = useMemo(() => getTexts({ page: "hub", locale: locale }), [locale]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "hub", locale: locale}));
+    }
+  },[locale]);
+
   const isNarrowScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [expanded, setExpanded] = React.useState(false);
   const handleClickExpand = () => {
@@ -214,7 +221,14 @@ const BottomContent = ({
 }) => {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "hub", locale: locale }), [locale]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "hub", locale: locale}));
+    }
+  },[locale]);
+
   return (
     <>
       <div>

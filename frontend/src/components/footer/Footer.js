@@ -6,9 +6,9 @@ import GitHubIcon from "@material-ui/icons/GitHub";
 import InstagramIcon from "@material-ui/icons/Instagram";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import YouTubeIcon from "@material-ui/icons/YouTube";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../public/lib/apiOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 import LargeFooter from "./LargeFooter";
 
@@ -114,7 +114,13 @@ const SmallFooter = ({ className, noSpacingTop, noAbsolutePosition, showOnScroll
   const classes = useStyles();
   const isNarrowScreen = useMediaQuery((theme) => theme.breakpoints.down("xs"));
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "navigation", locale: locale });
+  const [texts, setTexts] = useState({});
+
+    useEffect(async () => {
+      if (locale) {
+        setTexts(await getTexts({page: "navigation", locale: locale}));
+      }
+    },[locale]);
 
   return (
     <Box

@@ -1,7 +1,7 @@
 import { Container, LinearProgress, Typography, useMediaQuery } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
-import getTexts from "../../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../../public/texts/texts_optimized";
 import theme from "../../../themes/theme";
 import UserContext from "../../context/UserContext";
 
@@ -76,7 +76,14 @@ export default function DonationGoal({
   });
   const { locale } = useContext(UserContext);
   const isNarrowScreen = useMediaQuery(theme.breakpoints.down("xs"));
-  const texts = getTexts({ page: "donate", locale: locale, classes: classes, goal: goal });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "donate", locale: locale, classes: classes, goal: goal }));
+    }
+  },[locale, classes, goal]);
+
   return (
     <div className={`${className} ${classes.root}`}>
       <Container>

@@ -1,8 +1,8 @@
 import { makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
-import React, { useContext, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import ROLE_TYPES from "../../../../public/data/role_types";
-import getTexts from "../../../../public/texts/texts";
+import getTexts from "../../../../public/texts/texts_optimized";
 import UserContext from "../../context/UserContext";
 import ChatContent from "./ChatContent";
 import ChatHeader from "./ChatHeader";
@@ -46,7 +46,13 @@ export default function MessagingLayout({
 }) {
   const classes = useStyles();
   const { user, locale } = useContext(UserContext);
-  const texts = getTexts({ page: "chat", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "chat", locale: locale }));
+    }
+  },[locale]);
 
   const handleWindowClose = (e) => {
     if (curMessage && curMessage.length > 0) {

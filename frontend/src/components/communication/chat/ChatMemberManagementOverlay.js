@@ -2,11 +2,11 @@ import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import SaveIcon from "@material-ui/icons/Save";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import ROLE_TYPES from "../../../../public/data/role_types";
 import { apiRequest } from "../../../../public/lib/apiOperations";
 import { getAllChangedMembers, hasGreaterRole } from "../../../../public/lib/manageMembers";
-import getTexts from "../../../../public/texts/texts";
+import getTexts from "../../../../public/texts/texts_optimized";
 import UserContext from "../../context/UserContext";
 import ManageMembers from "../../manageMembers/ManageMembers";
 
@@ -41,7 +41,13 @@ export default function ChatMemberManagementOverlay({
 }) {
   const classes = useStyles();
   const { user, locale } = useContext(UserContext);
-  const texts = getTexts({ page: "chat", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "chat", locale: locale }));
+    }
+  },[locale]);
   const [state, setState] = React.useState({
     curParticipants: participants,
     curUserRole: user_role,

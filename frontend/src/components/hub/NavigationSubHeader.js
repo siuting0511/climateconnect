@@ -1,8 +1,8 @@
 import { Badge, Button, Container, Link, Typography, useMediaQuery } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../public/lib/apiOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import theme from "../../themes/theme";
 import UserContext from "../context/UserContext";
 import HubLinks from "../indexPage/hubsSubHeader/HubLinks";
@@ -43,7 +43,14 @@ const useStyles = makeStyles((theme) => ({
 export default function NavigationSubHeader({ hubName, allHubs, isLocationHub }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "navigation", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "navigation", locale: locale}));
+    }
+  },[locale]);
+
   const isNarrowScreen = useMediaQuery(theme.breakpoints.down("xs"));
   const isSmallMediumScreen = useMediaQuery(theme.breakpoints.down("sm"));
   return (

@@ -7,9 +7,9 @@ import InstagramIcon from "@material-ui/icons/Instagram";
 import LinkedInIcon from "@material-ui/icons/LinkedIn";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import YouTubeIcon from "@material-ui/icons/YouTube";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../public/lib/apiOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 import FeedbackButton from "../feedback/FeedbackButton";
 
@@ -148,7 +148,14 @@ const FooterLink = ({ children, href }) => {
 export default function LargeFooter({ className }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "navigation", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "navigation", locale: locale}));
+    }
+  },[locale]);
+
   return (
     <div className={`${className} ${classes.root}`}>
       <Container maxWidth="lg">

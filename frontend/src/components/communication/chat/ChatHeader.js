@@ -3,9 +3,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../../public/lib/apiOperations";
-import getTexts from "../../../../public/texts/texts";
+import getTexts from "../../../../public/texts/texts_optimized";
 import ChatTitle from "../../communication/chat/ChatTitle";
 import UserContext from "../../context/UserContext";
 import MiniProfilePreview from "../../profile/MiniProfilePreview";
@@ -48,7 +48,13 @@ export default function ChatHeader({
 }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "chat", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "chat", locale: locale }));
+    }
+  },[locale]);
   return (
     <div className={`${classes.topBar} ${className}`}>
       {!memberManagementExpanded && (

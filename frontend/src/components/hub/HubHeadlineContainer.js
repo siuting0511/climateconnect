@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-import React, { useContext } from "react";
-import getTexts from "../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../public/texts/texts_optimized";
 import OpenClimateMatchButton from "../climateMatch/OpenClimateMatchButton";
 import UserContext from "../context/UserContext";
 
@@ -69,7 +69,13 @@ export default function HubHeadlineContainer({
 }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "climatematch", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "climatematch", locale: locale}));
+    }
+  },[locale]);
 
   const getColoredHeadlineObject = () => {
     return headline.split(" ").reduce((arr, word, index) => {

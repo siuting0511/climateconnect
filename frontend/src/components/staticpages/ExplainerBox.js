@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, Typography, useMediaQuery } from "@material-ui/core";
-import React, { useContext } from "react";
-import getTexts from "../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../public/texts/texts_optimized";
 import theme from "../../themes/theme";
 import UserContext from "../context/UserContext";
 import ExplainerElement from "./ExplainerElement";
@@ -91,7 +91,13 @@ export default function ExplainerBox({ h1ClassName, className, hideHeadline }) {
   const classes = useStyles();
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "about", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "about", locale: locale }));
+    }
+  },[locale, classes]);
 
   return (
     <Container className={`${classes.root} ${className}`}>

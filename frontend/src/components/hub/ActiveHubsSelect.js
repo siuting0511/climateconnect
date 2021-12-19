@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-import React, { useContext } from "react";
-import getTexts from "../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 import MiniHubPreviews from "./MiniHubPreviews";
 
@@ -19,8 +19,14 @@ export default function ActiveHubsSelect({
 }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "hub", locale: locale });
-  return (
+    const [texts, setTexts] = useState({});
+
+    useEffect(async () => {
+        if (locale) {
+            setTexts(await getTexts({page: "hub", locale: locale}));
+        }
+    },[locale]);
+    return (
     <div>
       <Typography color="secondary" className={classes.headline}>
         {texts.add_hubs_in_which_your_organization_is_active}

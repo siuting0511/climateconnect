@@ -34,10 +34,10 @@ import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import SettingsIcon from "@material-ui/icons/Settings";
 import noop from "lodash/noop";
-import React, { useContext, useMemo, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../public/lib/apiOperations";
 import { getImageUrl } from "../../../public/lib/imageOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import theme from "../../themes/theme";
 import Notification from "../communication/notifications/Notification";
 import NotificationsBox from "../communication/notifications/NotificationsBox";
@@ -348,7 +348,13 @@ export default function Header({
     background: background,
   });
   const { user, signOut, notifications, pathName, locale } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "navigation", locale: locale }), [locale]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "navigation", locale: locale}));
+    }
+  },[locale]);
   const [anchorEl, setAnchorEl] = React.useState(false);
   const isNarrowScreen = useMediaQuery((theme) => theme.breakpoints.down("xs"));
   const isMediumScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -425,7 +431,14 @@ function StaticPageLinks() {
   const { locale } = useContext(UserContext);
   const isNarrowScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const texts = getTexts({ page: "navigation", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "navigation", locale: locale}));
+    }
+  },[locale]);
+
   const STATIC_PAGE_LINKS = getStaticPageLinks(texts);
   const localePrefix = getLocalePrefix(locale);
 

@@ -1,9 +1,9 @@
 import { Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext, useMemo } from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import Carousel from "react-multi-carousel";
 import { getLocalePrefix } from "../../../public/lib/apiOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 
 const useStyles = makeStyles((theme) => {
@@ -159,7 +159,15 @@ const responsive = {
 export default function MainHeadingContainerMobile() {
   const classes = useStyles();
   const { locale, user } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "general", locale: locale }), [locale]);
+
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "general", locale: locale}));
+    }
+  },[locale]);
+
   const carouselContent = useMemo(() => getCarouselContent(texts), [texts]);
 
   return (

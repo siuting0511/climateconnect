@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-import React, { useContext, useMemo } from "react";
-import getTexts from "../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 
 const useStyles = makeStyles((theme) => ({
@@ -59,7 +59,14 @@ export default function HubHeaderImage({ image, source, fullWidth, isLocationHub
     isLocationHub: isLocationHub,
     loggedOut: !user,
   });
-  const texts = useMemo(() => getTexts({ page: "hub", locale: locale }), [locale]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "hub", locale: locale}));
+    }
+  },[locale]);
+
   return (
     <>
       <div className={classes.imageContainer}>

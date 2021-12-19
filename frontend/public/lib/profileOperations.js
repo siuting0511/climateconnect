@@ -1,6 +1,7 @@
 import Router from "next/router";
-import getTexts from "../texts/texts";
+import getTexts from "../texts/texts_optimized";
 import { getImageUrl } from "./imageOperations";
+import {useEffect, useState} from "react";
 
 export function parseProfile(profile, detailledSkills, keepOldProps) {
   let user = { info: {} };
@@ -47,7 +48,14 @@ const convertUndefinedToNull = (inputObject) => {
 };
 
 export function redirectOnLogin(user, redirectUrl, locale) {
-  const texts = getTexts({ page: "profile", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "profile", locale: locale }));
+    }
+  },[locale]);
+
   const SIGN_UP_MESSAGE = texts.sign_up_message;
 
   if (user.has_logged_in < 2) {

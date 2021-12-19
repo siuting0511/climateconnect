@@ -1,7 +1,7 @@
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext, useMemo } from "react";
-import getTexts from "../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 
 const useStyles = makeStyles(() => ({
@@ -23,7 +23,13 @@ export default function LoadingContainer({ headerHeight, footerHeight }) {
     subtractedHeight: (headerHeight + footerHeight).toString(),
   });
   const { locale } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "general", locale: locale }), [locale]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "general", locale: locale}));
+    }
+  },[locale]);
   return (
     <div className={classes.spinnerContainer}>
       <div>

@@ -1,8 +1,8 @@
 import { Container, Link, useMediaQuery } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../../public/lib/apiOperations";
-import getTexts from "../../../../public/texts/texts";
+import getTexts from "../../../../public/texts/texts_optimized";
 import theme from "../../../themes/theme";
 import UserContext from "../../context/UserContext";
 import GoBackFromProjectPageButton from "../../project/Buttons/GoBackFromProjectPageButton";
@@ -49,7 +49,14 @@ export default function HubsSubHeader({ hubs, subHeaderRef, onlyShowDropDown }) 
   const classes = useStyles();
   const isNarrowScreen = useMediaQuery(theme.breakpoints.down("xs"));
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "navigation", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "navigation", locale: locale}));
+    }
+  },[locale]);
+
   return (
     <div className={classes.root} ref={subHeaderRef}>
       <Container className={classes.container}>

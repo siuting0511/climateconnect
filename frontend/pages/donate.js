@@ -1,8 +1,8 @@
 import { Container, Typography, useMediaQuery } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext, useMemo } from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import { apiRequest } from "../public/lib/apiOperations";
-import getTexts from "../public/texts/texts";
+import getTexts from "../public/texts/texts_optimized";
 import UserContext from "../src/components/context/UserContext";
 import WideLayout from "../src/components/layouts/WideLayout";
 import FloatingWidget from "../src/components/staticpages/donate/FloatingWidget";
@@ -118,7 +118,14 @@ export default function Donate({ goal_name, goal_amount, current_amount }) {
   const isNarrowScreen = useMediaQuery(theme.breakpoints.down("xs"));
   const [overlayOpen, setOverlayOpen] = React.useState(false);
   const { locale } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "donate", locale: locale }), [locale]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "donate", locale: locale}));
+    }
+  },[locale]);
+
   return (
     <WideLayout title={texts.your_donation_counts} isStaticPage noSpaceBottom noFeedbackButton>
       <div className={classes.root}>

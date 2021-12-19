@@ -1,10 +1,10 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, IconButton, Link, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../public/lib/apiOperations";
 import { getImageUrl } from "../../../public/lib/imageOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 import SelectField from "../general/SelectField";
 
@@ -77,7 +77,14 @@ export default function MiniHubPreview({
 }) {
   const classes = useStyles({ createMode: createMode, thumbnail_image: hub?.thumbnail_image });
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "hub", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "hub", locale: locale}));
+    }
+  },[locale]);
+
   const handleRemoveHub = (event) => {
     event.preventDefault();
     onClickRemoveHub(hub);

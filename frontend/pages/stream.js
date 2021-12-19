@@ -1,10 +1,17 @@
-import React, { useContext, useEffect } from "react";
-import getTexts from "../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../public/texts/texts_optimized";
 import UserContext from "../src/components/context/UserContext";
 
 export default function Stream() {
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "general", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "general", locale: locale }));
+    }
+  },[locale]);
+
   useEffect(() => {
     window.location = "https://youtu.be/lUbxcp-OWmo";
   });

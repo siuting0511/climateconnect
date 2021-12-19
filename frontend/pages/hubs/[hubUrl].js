@@ -2,7 +2,7 @@ import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import parseHtml from "html-react-parser";
 import Head from "next/head";
-import React, { useContext, useMemo, useRef, useState } from "react";
+import React, {useContext, useEffect, useMemo, useRef, useState} from "react";
 import Cookies from "universal-cookie";
 import { apiRequest } from "../../public/lib/apiOperations";
 import { applyNewFilters, getInitialFilters } from "../../public/lib/filterOperations";
@@ -15,7 +15,7 @@ import {
 import { getAllHubs } from "../../public/lib/hubOperations";
 import { getImageUrl } from "../../public/lib/imageOperations";
 import { getLocationFilteredBy } from "../../public/lib/locationOperations";
-import getTexts from "../../public/texts/texts";
+import getTexts from "../../public/texts/texts_optimized";
 import BrowseContent from "../../src/components/browse/BrowseContent";
 import UserContext from "../../src/components/context/UserContext";
 import BrowseExplainer from "../../src/components/hub/BrowseExplainer";
@@ -132,10 +132,14 @@ export default function Hub({
 }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = useMemo(() => getTexts({ page: "hub", locale: locale, hubName: name }), [
-    locale,
-    name,
-  ]);
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "hub", locale: locale, hubName: name}));
+    }
+  },[locale, name]);
+
   const token = new Cookies().get("token");
 
   // Initialize filters. We use one set of filters for all tabs (projects, organizations, members)

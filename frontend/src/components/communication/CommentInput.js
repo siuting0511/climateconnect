@@ -1,8 +1,8 @@
 import { Avatar, Button, Typography, useMediaQuery } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getImageUrl } from "../../../public/lib/imageOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import theme from "../../themes/theme";
 import UserContext from "../context/UserContext";
 import LoginNudge from "../general/LoginNudge";
@@ -54,7 +54,13 @@ function CommentInput({
   const classes = useStyles();
   const [curComment, setCurComment] = React.useState("");
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "communication", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "communication", locale: locale }));
+    }
+  },[locale]);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const onCurCommentChange = (e) => {

@@ -3,9 +3,9 @@ import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
 import GroupIcon from "@material-ui/icons/Group";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { getLocalePrefix } from "../../../../public/lib/apiOperations";
-import getTexts from "../../../../public/texts/texts";
+import getTexts from "../../../../public/texts/texts_optimized";
 import { getFragmentsWithMentions } from "../../../utils/mentions_markdown";
 import UserContext from "../../context/UserContext";
 import {
@@ -69,7 +69,15 @@ const NOTIFICATION_TYPES = [
 
 export default function Notification({ notification, isPlaceholder }) {
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "notification", locale: locale, idea: notification?.idea });
+
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "notification", locale: locale, idea: notification?.idea }));
+    }
+  },[locale, notification?.idea]);
+
   if (isPlaceholder) return <PlaceholderNotification />;
   else {
     const type = NOTIFICATION_TYPES[notification.notification_type];
@@ -100,7 +108,13 @@ export default function Notification({ notification, isPlaceholder }) {
 const PersonJoinedIdeaNotification = ({ notification }) => {
   const supporter = notification.idea_supporter;
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "notification", locale: locale, idea: notification.idea });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "notification", locale: locale, idea: notification?.idea }));
+    }
+  },[locale, notification?.idea]);
   //TODO: Link to group chat
   return (
     <GenericNotification
@@ -118,7 +132,13 @@ const PersonJoinedIdeaNotification = ({ notification }) => {
 const PrivateMessageNotification = ({ notification }) => {
   const sender = notification.last_message.sender;
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "notification", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "notification", locale: locale }));
+    }
+  },[locale]);
   return (
     <GenericNotification
       link={`/chat/${notification.chat_uuid}/`}
@@ -136,7 +156,13 @@ const GroupMessageNotification = ({ notification }) => {
   const group_title = notification.chat_title;
   const sender = notification.last_message.sender;
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "notification", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "notification", locale: locale }));
+    }
+  },[locale]);
   return (
     <GenericNotification
       link={`/chat/${notification.chat_uuid}/`}
@@ -154,7 +180,13 @@ const GroupMessageNotification = ({ notification }) => {
 const PlaceholderNotification = () => {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "notification", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "notification", locale: locale }));
+    }
+  },[locale]);
   return (
     <Link href={getLocalePrefix(locale) + "/inbox"} underline="none" color="inherit">
       <StyledMenuItem>
@@ -208,7 +240,13 @@ const MentionNotification = ({ notification, texts, locale }) => {
 
 const ProjectFollowerNotification = ({ notification }) => {
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "notification", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "notification", locale: locale }));
+    }
+  },[locale]);
   const followerName =
     notification.project_follower.first_name + " " + notification.project_follower.last_name;
   return (
@@ -226,7 +264,14 @@ const ProjectFollowerNotification = ({ notification }) => {
 
 const ProjectLikeNotification = ({ notification }) => {
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "notification", locale: locale, project: notification.project });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "notification", locale: locale, project: notification.project }));
+    }
+  },[locale, notification.project]);
+
   const likingUserName =
     notification.project_like.first_name + " " + notification.project_like.last_name;
   return (

@@ -9,7 +9,7 @@ import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import Head from "next/head";
 import Router from "next/router";
 import React, { useContext, useEffect, useState } from "react";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import FeedbackContext from "../context/FeedbackContext";
 import UserContext from "../context/UserContext";
 import FeedbackButton from "../feedback/FeedbackButton";
@@ -74,7 +74,13 @@ export default function LayoutWrapper({
   const [loading, setLoading] = React.useState(true);
   const [bannerOpen, setBannerOpen] = React.useState(true);
   const { acceptedNecessary, locale, isLoading } = useContext(UserContext);
-  const texts = getTexts({ page: "general", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "general", locale: locale}));
+    }
+  },[locale]);
 
   const handleUpdateHash = (newHash) => {
     setSnackbarProps({ ...snackbarProps, hash: newHash });

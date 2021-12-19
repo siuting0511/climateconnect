@@ -1,7 +1,7 @@
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
-import getTexts from "../../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../../public/texts/texts_optimized";
 import UserContext from "../../context/UserContext";
 import DonationWigetDialog from "../../dialogs/DonationWigetDialog";
 import DonationGoal from "./DonationGoal";
@@ -30,7 +30,13 @@ export default function ToggleWidgetButton({
 }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "donate", locale: locale, classes: classes });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "donate", locale: locale, classes: classes }));
+    }
+  },[locale, classes]);
 
   const handleDialogClose = () => {
     setOverlayOpen(false);

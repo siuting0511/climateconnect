@@ -1,9 +1,9 @@
 import { Button, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { redirect } from "../../../public/lib/apiOperations";
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 
 const useStyles = makeStyles(() => ({
@@ -15,7 +15,13 @@ const useStyles = makeStyles(() => ({
 export default function LogInAction({ onClose }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "general", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "general", locale: locale}));
+    }
+  },[locale]);
 
   const onClickSignUp = () => {
     let redirectUrl = window.location.href

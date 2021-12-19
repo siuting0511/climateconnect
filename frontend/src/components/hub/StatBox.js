@@ -1,8 +1,8 @@
 import { Link, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
+import React, {useContext, useEffect, useState} from "react";
 
-import getTexts from "../../../public/texts/texts";
+import getTexts from "../../../public/texts/texts_optimized";
 import UserContext from "../context/UserContext";
 import Stat from "./Stat";
 
@@ -31,7 +31,13 @@ const useStyles = makeStyles((theme) => ({
 export default function StatBox({ title, stats }) {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "hub", locale: locale });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({page: "hub", locale: locale}));
+    }
+  },[locale]);
 
   return (
     <div className={classes.root}>

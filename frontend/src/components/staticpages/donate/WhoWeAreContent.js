@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useContext } from "react";
-import getTexts from "../../../../public/texts/texts";
+import React, {useContext, useEffect, useState} from "react";
+import getTexts from "../../../../public/texts/texts_optimized";
 import UserContext from "../../context/UserContext";
 
 const useStyles = makeStyles((theme) => ({
@@ -25,7 +25,14 @@ const useStyles = makeStyles((theme) => ({
 export default function WhoWeAreContent() {
   const classes = useStyles();
   const { locale } = useContext(UserContext);
-  const texts = getTexts({ page: "donate", locale: locale, classes: classes });
+  const [texts, setTexts] = useState({});
+
+  useEffect(async () => {
+    if (locale) {
+      setTexts(await getTexts({ page: "donate", locale: locale, classes: classes}));
+    }
+  },[locale, classes]);
+
   return (
     <div className={classes.teamRoot}>
       <div className={classes.imageContainer}>
