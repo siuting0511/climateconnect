@@ -1,6 +1,6 @@
 from organization.models.members import ProjectMember
 from climateconnect_api.models.language import Language
-from organization.models.tags import ProjectTagging, ProjectTags
+from organization.models.tags import OrganizationTags, ProjectTagging, ProjectTags
 from organization.models.project import ProjectParents
 from django.core.management.base import BaseCommand
 import random
@@ -106,6 +106,38 @@ def create_project_status_test_data():
         print("Recurring project status created.")
     else:
         print("Recurring project status already exists.")
+
+def create_organizations_tag_text_data():
+    # Creating 2 organization tags
+    print("creating organization tags test data...")
+    if not OrganizationTags.objects.filter(name='Volunteer group').exists():
+        OrganizationTags.objects.create(
+            name='Volunteer group',
+            name_de_translation='Ehrenamtliche Gruppe',
+            key='volunteergroup',
+            show_in_climatematch=True
+        )
+        print("OrganizationTags entry 'volunteer group' created.")
+    else:
+        print("OrganizationTags entry 'volunteer group' already exists.")
+
+    if not OrganizationTags.objects.filter(name='For-profit company').exists():
+        OrganizationTags.objects.create(
+            name='For-profit company',
+            name_de_translation='Unternehmen',
+            key='for-profitcompany',
+            show_in_climatematch=False
+        )
+        print("OrganizationTags entry 'For-profit company' created.")
+    else:
+        print("OrganizationTags entry 'For-profit company' already exists.")
+    
+    if not ProjectStatus.objects.filter(name='Recurring').exists():
+        ProjectStatus.objects.create(name='Recurring', status_type=4, has_end_date=False, has_start_date=True)
+        print("Recurring project status created.")
+    else:
+        print("Recurring project status already exists.")
+    print("finished creating organization tags test data!")
 
 def create_organization_test_data(number_of_rows: int):
     print("Creating orgranization data...")
@@ -377,6 +409,7 @@ class Command(BaseCommand):
         create_availability_test_data(number_of_rows=number_of_rows)
         create_roles_test_data()
         create_project_status_test_data()
+        create_organizations_tag_text_data()
         create_organization_test_data(number_of_rows=number_of_rows)
         create_project_tags_test_data()
         create_project_test_data(number_of_rows=number_of_rows)
