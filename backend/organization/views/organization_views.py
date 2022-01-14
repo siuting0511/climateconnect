@@ -78,10 +78,13 @@ class ListOrganizationsAPIView(ListAPIView):
                     project_category_ids = list(map(lambda c: c.id, project_category))
                     project_tags = ProjectTags.objects.filter(id__in=project_category_ids)
                     project_tags_with_children = ProjectTags.objects.filter(Q(parent_tag__in=project_tags) | Q(id__in=project_tags))
+                    # get all org who either selected the hub for their org or have projects in this hub
                     organizations = organizations.filter(
                         Q(project_parent_org__project__tag_project__project_tag__in=project_tags_with_children) 
                         | 
                         Q(field_tag_organization__field_tag__in=project_tags_with_children)
+                        |
+                        Q(hubs__filter_parent_tags__in=project_tags)
                     ).distinct()
                 elif hub[0].hub_type == Hub.LOCATION_HUB_TYPE:
                     location = hub[0].location.all()[0]
