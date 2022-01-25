@@ -105,10 +105,9 @@ class Notification(models.Model):
         verbose_name="Created at", auto_now_add=True
     )
 
-
-class Meta:
-    verbose_name_plural = "Notifications"
-    ordering = ["-created_at"]
+    class Meta:
+        verbose_name_plural = "Notifications"
+        ordering = ["-created_at"]
 
 
 class UserNotification(models.Model):

@@ -71,6 +71,7 @@ class MessageParticipants(models.Model):
                 second_participant_name = participants[1].user.first_name + " " + participants[1].user.last_name
             return "Chat with %s and %s" % (first_participant_name, second_participant_name)
 
+
 class Message(models.Model):
     message_participant = models.ForeignKey(
         MessageParticipants, related_name="participant_message",
@@ -110,6 +111,7 @@ class Message(models.Model):
     def __str__(self):
         return "Message %s from %s in chat %s" % (self.id, self.sender.id, self.message_participant_id)
 
+
 class MessageReceiver(models.Model):
     receiver = models.ForeignKey(
         User, related_name="messagereceiver_receiver",
@@ -136,6 +138,7 @@ class MessageReceiver(models.Model):
 
     def __str__(self):
         return "Message to %s %s" % (self.receiver.first_name, self.receiver.last_name)
+
 
 class Participant(models.Model):
     user = models.ForeignKey(

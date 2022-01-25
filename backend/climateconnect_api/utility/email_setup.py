@@ -94,6 +94,7 @@ def send_email(
             send_email.__name__, ex
         ))
 
+
 def get_user_verification_url(verification_key, lang_url):
     # TODO: Set expire time for user verification
     verification_key_str = str(verification_key).replace("-", "%2D")
@@ -103,6 +104,7 @@ def get_user_verification_url(verification_key, lang_url):
 
     return url
 
+
 def get_new_email_verification_url(verification_key, lang_url):
     #TODO: Set expire time for new email verification
     verification_key_str = str(verification_key).replace("-", "%2D")
@@ -111,6 +113,7 @@ def get_new_email_verification_url(verification_key, lang_url):
     ))
 
     return url
+
 
 def get_reset_password_url(verification_key, lang_url):
     #TODO: Set expire time for new email verification
@@ -144,6 +147,7 @@ def send_user_verification_email(user, verification_key):
         notification=None
     )
 
+
 def send_new_email_verification(user, new_email, verification_key):
     lang_url = get_user_lang_url(get_user_lang_code(user))
     url = get_new_email_verification_url(verification_key, lang_url)
@@ -167,6 +171,7 @@ def send_new_email_verification(user, new_email, verification_key):
         notification=None
     )
 
+
 def send_password_link(user, password_reset_key):
     lang_url = get_user_lang_url(get_user_lang_code(user))
     url = get_reset_password_url(password_reset_key, lang_url)
@@ -188,6 +193,7 @@ def send_password_link(user, password_reset_key):
         should_send_email_setting="",
         notification=None
     )
+
 
 def send_feedback_email(email, message, send_response):
     data = {
@@ -214,7 +220,6 @@ def send_feedback_email(email, message, send_response):
             }
         ]
     }
-    print(data)
 
     try:
         mailjet_send_api.send.create(data=data)
@@ -222,6 +227,7 @@ def send_feedback_email(email, message, send_response):
         print("%s: Error sending email: %s" % (
             send_user_verification_email.__name__, ex
         ))
+
 
 def register_newsletter_contact(email_address):
     old_contact = mailjet_api.contact.get(email_address)
@@ -232,6 +238,7 @@ def register_newsletter_contact(email_address):
         contact_id = result['Data'][0]['ID']
     add_contact_to_list(contact_id, settings.MAILJET_NEWSLETTER_LIST_ID)
 
+
 def create_contact(email_address):
     data = {
         'IsExcludedFromCampaigns': "true",
@@ -240,6 +247,7 @@ def create_contact(email_address):
     new_contact = mailjet_api.contact.create(data=data)
     result = new_contact.json()
     return result['Data'][0]['ID']
+
 
 def add_contact_to_list(contact_id, list_id):
     data = {
@@ -251,6 +259,7 @@ def add_contact_to_list(contact_id, list_id):
         logger.error(result.status_code)
         logger.error("Could not add contact "+str(contact_id)+" to list "+str(list_id))
     return True
+
 
 def unregister_newsletter_contact(email_address):
     contact = mailjet_api.contact.get(email_address)
