@@ -208,15 +208,15 @@ class Hub(models.Model):
 
 class LocalAmbassador(models.Model):
     title = models.CharField(
-        help_text="Ambassador title",
-        verbose_name="Ambassador title",
+        help_text="Ambassador title (EN)",
+        verbose_name="Ambassador title in English",
         max_length=1024,
         null=True,
         blank=True
     )
     title_de = models.CharField(
-        help_text="Short description",
-        verbose_name="Short description",
+        help_text="Ambassador title (DE)",
+        verbose_name="Ambassador title in German",
         max_length=1024,
         null=True,
         blank=True

@@ -1,7 +1,7 @@
 import { getFashionHubDescription } from "./hubDescriptions/fashion";
 import { getFoodHubDescription } from "./hubDescriptions/food";
 
-export default function getHubTexts({ hubName }) {
+export default function getHubTexts({ hubName, localAmbassador }) {
   const generalHubTexts = {
     search_for_solutions_in_sector: {
       en: "Search for climate solutions in the " + hubName + " sector",
@@ -125,8 +125,8 @@ export default function getHubTexts({ hubName }) {
       de: "Bitte melde dich an, um Menschen zu kontaktieren.",
     },
     contact_ambassador: {
-      en: "Contact Local Ambassador",
-      de: "Lokalen Ambassador Kontaktieren",
+      en: `Contact ${localAmbassador?.title}`,
+      de: `${localAmbassador?.title} kontaktieren`,
     },
   };
 
